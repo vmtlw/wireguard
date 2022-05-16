@@ -1,0 +1,52 @@
+#!/bin/bash
+
+SUBNET="10.7.0"
+CIDR=20
+DNS=8.8.8.8
+ENDPOINT=93.81.249.20:51822
+
+if [[ -z $1 ]]
+then
+        echo "укажите пользователя в параметре 1" 1>&2
+        exit 1
+fi
+
+USERNAME="$1"
+
+
+SERVER_PRIVKEY=$( wg genkey )
+SERVER_PUBKEY=$( echo $SERVER_PRIVKEY | wg pubkey )
+CLIENT_PRIVKEY=$( wg genkey )
+CLIENT_PUBKEY=$( echo $CLIENT_PRIVKEY | wg pubkey )
+
+NEXTIP="$(cat /etc/wireguard/clients/nextip)"
+
+cat >>/etc/wireguard/wg1.conf <<EOF
+
+#==> $1_public_key <==
+[Peer]
+PublicKey = $CLIENT_PUBKEY
+AllowedIPs = ${SUBNET}.${NEXTIP}/32
+EOF
+
+cat >/etc/wireguard/clients/$USERNAME.conf <<EOF
+[Interface]
+Address = ${SUBNET}.${NEXTIP}/32
+PrivateKey = $CLIENT_PRIVKEY
+DNS = $DNS
+
+[Peer]
+PublicKey = $SERVER_PUBKEY
+AllowedIPs = 0.0.0.0/0
+Endpoint = $ENDPOINT
+PersistentKeepalive = 21
+EOF
+
+qrencode -t ansiutf8 < /etc/wireguard/clients/$USERNAME.conf
+
+echo "${SUBNET}.${NEXTIP}	$1" >> /etc/hosts
+
+echo "$(( $NEXTIP + 1 ))" >/etc/wireguard/clients/nextip
+
+wg-quick down wg1
+wg-quick up wg1
