@@ -30,7 +30,7 @@ EOF
 cat << EOF >> ./wg0.conf
 
 [Peer]
-PublicKey = 
+PublicKey = $(echo PRIVKEY_CLIENT | wg pubkey)
 AllowedIPs = 10.0.0.$FREE_IP
 EOF
 
@@ -40,3 +40,7 @@ echo TODO PublicKey =
 #  qrencode -t ansiutf8 < ./clients/$1.conf
 #  wg syncconf wg0 <(wg-quick strip wg0)  
 #fi
+
+
+
+#$(echo PRIVKEY_CLIENT | wg pubkey)
