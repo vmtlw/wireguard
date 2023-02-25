@@ -1,26 +1,27 @@
 #!/bin/bash
 
 NAME=$1
-PRIVATEKEY=$(wg genkey)
+PRIVKEY_CLIENT=$(wg genkey)
 ENDPOINT="EXTERNAL_IP"
 PORT="51820"
+PUBKEY_SERVER=$( awk "{if(\$1== \"PrivateKey\"){print \$3}}" ./wg0.conf )
+COUNT=($(grep -r AllowedIPs ./wg0.conf | awk -F . '{print $4}'))
 
 
-  COUNT=($(grep -r AllowedIPs ./wg0.conf | awk -F . '{print $4}'))
-  for FREE_IP in {2..254}; do
-    if [[ ! "${COUNT[*]}" =~ "$FREE_IP" ]]; then
-        break
-    fi
-  done
+for FREE_IP in {2..254}; do
+  if [[ ! "${COUNT[*]}" =~ "$FREE_IP" ]]; then
+    break
+  fi
+done
 
-cat << EOF >> ./clients/$1.conf
+cat << EOF > ./clients/$1.conf
 [Interface] 
 Address = 10.0.0.$FREE_IP/24
-PrivateKey = $PRIVATEKEY
+PrivateKey = $PRIVKEY_CLIENT
 DNS = 8.8.8.8
 
 [Peer]
-PublicKey = LX+d/eCWweHhiMB4KitW+9eeri/n5rm2HCPgXL0NjW4=
+PublicKey = 
 AllowedIPs = 0.0.0.0/0
 Endpoint = $ENDPOINT:$PORT
 PersistentKeepalive = 20
@@ -29,10 +30,11 @@ EOF
 cat << EOF >> ./wg0.conf
 
 [Peer]
-PublicKey = LX+d/eCWweHhiMB4KitW+9eeri/n5rm2HCPgXL0NjW4=
+PublicKey = 
 AllowedIPs = 10.0.0.$FREE_IP
 EOF
 
+echo TODO PublicKey =
 
 #if [[ -e ./clients/$1.conf ]]; then
 #  qrencode -t ansiutf8 < ./clients/$1.conf
