@@ -30,11 +30,9 @@ EOF
 cat << EOF >> ./wg0.conf
 
 [Peer]
-PublicKey = $(echo PRIVKEY_CLIENT | wg pubkey)
+PublicKey = $(echo $PRIVKEY_CLIENT | wg pubkey)
 AllowedIPs = 10.0.0.$FREE_IP
 EOF
-
-echo TODO PublicKey =
 
 #if [[ -e ./clients/$1.conf ]]; then
 #  qrencode -t ansiutf8 < ./clients/$1.conf
