@@ -21,7 +21,7 @@ PrivateKey = $PRIVKEY_CLIENT
 DNS = 8.8.8.8
 
 [Peer]
-PublicKey = 
+PublicKey =
 AllowedIPs = 0.0.0.0/0
 Endpoint = $ENDPOINT:$PORT
 PersistentKeepalive = 20

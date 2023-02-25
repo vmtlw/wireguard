@@ -9,7 +9,7 @@ fi
 PRIVKEY_SERVER=$(wg genkey)
 REAL_IP=$(curl -s 2ip.ru)
 num_line=$(grep -n -B2 Endpoint create_profile.sh | head -n1 | cut -d- -f1)
-USED_IFACE=$(echo $(ip r g 8.8.8.8 | awk -- '{printf $5}'))
+USED_IFACE=$(ip r g 8.8.8.8 | awk -- '{printf $5}')
 
 sed -i -r "s|^PrivateKey =.*|PrivateKey = "${PRIVKEY_SERVER}"|" ./wg0.conf 2> /dev/null
 if [[ $? == 0 ]]; then
@@ -22,4 +22,4 @@ fi
 
 sed -i "s/EXTERNAL_IP/$REAL_IP/" ./create_profile.sh
 
-
+sed -i "s/USED_IFACE/${USED_IFACE}/g" wg0.conf
