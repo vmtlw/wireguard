@@ -1,5 +1,6 @@
 if [[ ! -e /usr/bin/wg ]]; then 
-  echo Please, install Wireguard tools
+  echo Please, install rireguard tools
+  exit 1
 fi
 
 if ! [[ -d ./clients ]]; then 
@@ -7,7 +8,13 @@ if ! [[ -d ./clients ]]; then
 fi
 
 if [[ ! -e /usr/sbin/resolvconf ]]; then
-  echo Please, install Resolvconf tools
+  echo Please, install resolvconf tools
+  exit 1
+fi
+
+if [[ ! -e /usr/bin/qrencode ]]; then
+  echo Please, install qrencode
+  exit 1
 fi
 
 PRIVKEY_SERVER=$(wg genkey)
