@@ -23,3 +23,9 @@ fi
 sed -i "s/EXTERNAL_IP/$REAL_IP/" ./create_profile.sh
 
 sed -i "s/USED_IFACE/${USED_IFACE}/g" wg0.conf
+
+
+
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv4.conf.all.forwarding=1
+sysctl -w net.ipv6.conf.all.forwarding=1
