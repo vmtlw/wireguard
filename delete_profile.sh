@@ -12,12 +12,13 @@ fi
 number_array=( $(cat -n wg0.conf | grep -B2 $IP_PROFILE | awk '{print $1}') )
 max=${number_array[2]}
 min=${number_array[0]}
-for ((i = $max ; i > $min-1 ; i--)) ; do
-  sed -i "${i}d" wg0.conf
-  STATUS=$?
+for (( i = $max+1; i > $min-1; i-- )) ; do
+sed -i "${i}d" wg0.conf
+STATUS=$?
 done
 if [[ $STATUS == 0 ]]; then
-  rm ./clients/$NAME_PROFILE.conf
+rm ./clients/$NAME_PROFILE.conf
+ 
 else 
   echo нечего удалять
 fi
