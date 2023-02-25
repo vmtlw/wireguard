@@ -1,8 +1,16 @@
-#магия, выпоняется команда через раз, возможно мешают '+' в сгенерированном ключе
-for i in {1..1000}; do 
-  sed -i -r "s/^PrivateKey =.*/PrivateKey = "$(wg genkey)"/" ./wg0.conf 2> /dev/null
+if [[ ! -e /usr/bin/wg ]]; then 
+  echo Please, install Wireguard tools
+  exit 1
+fi
+
+PRIVKEY=$(wg genkey)
+
+  sed -i -r "s|^PrivateKey =.*|PrivateKey = "${PRIVKEY}"|" ./wg0.conf 2> /dev/null
   if [[ $? == 0 ]]; then
-  echo succsess
-    break
+    echo Secret key successfully registered 
   fi
-done
+
+  sed -i "${num_line}s|^PublicKey =.*|PublicKey = "$(echo ${PRIVKEY} | wg pubkey)"|" ./create_profile.sh 2>/dev/null
+  if [[ $? == 0 ]]; then
+    echo Public key successfully registered 
+  fi

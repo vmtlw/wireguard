@@ -20,7 +20,7 @@ PrivateKey = $PRIVATEKEY
 DNS = 8.8.8.8
 
 [Peer]
-PublicKey = t7ZNDAdUIrwt9tsJ7foGr8/7U1ZjGrAO93zU9DRekmU=
+PublicKey = LX+d/eCWweHhiMB4KitW+9eeri/n5rm2HCPgXL0NjW4=
 AllowedIPs = 0.0.0.0/0
 Endpoint = $ENDPOINT:$PORT
 PersistentKeepalive = 20
@@ -29,7 +29,7 @@ EOF
 cat << EOF >> ./wg0.conf
 
 [Peer]
-PublicKey = $(echo $PRIVATEKEY | wg pubkey)
+PublicKey = LX+d/eCWweHhiMB4KitW+9eeri/n5rm2HCPgXL0NjW4=
 AllowedIPs = 10.0.0.$FREE_IP
 EOF
 
