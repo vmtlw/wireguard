@@ -6,6 +6,10 @@ if ! [[ -d ./clients ]]; then
   mkdir ./clients
 fi
 
+if [[ ! -e /usr/sbin/resolvconf ]]; then
+  echo Please, install Resolvconf tools
+fi
+
 PRIVKEY_SERVER=$(wg genkey)
 REAL_IP=$(curl -s 2ip.ru)
 num_line=$(grep -n -B2 Endpoint create_profile.sh | head -n1 | cut -d- -f1)

@@ -34,11 +34,7 @@ PublicKey = $(echo $PRIVKEY_CLIENT | wg pubkey)
 AllowedIPs = 10.0.0.$FREE_IP
 EOF
 
-#if [[ -e ./clients/$1.conf ]]; then
-#  qrencode -t ansiutf8 < ./clients/$1.conf
-#  wg syncconf wg0 <(wg-quick strip wg0)  
-#fi
-
-
-
-#$(echo PRIVKEY_CLIENT | wg pubkey)
+if [[ -e ./clients/$1.conf ]]; then
+  qrencode -t ansiutf8 < ./clients/$1.conf
+  wg syncconf wg0 <(wg-quick strip wg0)  
+fi
