@@ -7,7 +7,7 @@ if ! [[ -d ./clients ]]; then
   mkdir ./clients
 fi
 
-if ! [[ -e /usr/sbin/resolvconf ]]; then
+if ! [[ -e /sbin/resolvconf ]]; then
   echo Please, install resolvconf tools
   exit 1
 fi
