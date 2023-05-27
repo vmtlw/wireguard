@@ -1,10 +1,11 @@
 #!/bin/bash
 
-set -eu
+set -eu --pipefail
 
-which wg &>/dev/null ||  echo Please, install wireguard-tools
-which qrencode &>/dev/null || echo Please, install qrencode
-which resolvconf &>/dev/null || echo Please,install resolvconf tools
+for package in qrencode wg resolvconf curl
+do
+	which $package &>/dev/null ||  echo command $package not found
+done
 
 [[ -d ./clients ]] ||  mkdir -p ./clients
 
