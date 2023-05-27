@@ -1,21 +1,12 @@
-if [[ ! -e /usr/bin/wg ]]; then 
-  echo Please, install rireguard tools
-  exit 1
-fi
+#!/bin/bash
 
-if ! [[ -d ./clients ]]; then 
-  mkdir ./clients
-fi
+set -eu
 
-if ! [[ -e /sbin/resolvconf ]]; then
-  echo Please, install resolvconf tools
-  exit 1
-fi
+which wg &>/dev/null ||  echo Please, install wireguard-tools
+which qrencode &>/dev/null || echo Please, install qrencode
+which resolvconf &>/dev/null || echo Please,install resolvconf tools
 
-if [[ ! -e /usr/bin/qrencode ]]; then
-  echo Please, install qrencode
-  exit 1
-fi
+[[ -d ./clients ]] ||  mkdir -p ./clients
 
 PRIVKEY_SERVER=$(wg genkey)
 REAL_IP=$(curl -s 2ip.ru)
@@ -23,13 +14,12 @@ num_line=$(grep -n -B2 Endpoint create_profile.sh | head -n1 | cut -d- -f1)
 USED_IFACE=$(ip r g 8.8.8.8 | awk -- 'NR==1{print $5}')
 
 sed -i -r "s|^PrivateKey =.*|PrivateKey = "${PRIVKEY_SERVER}"|" ./wg0.conf 2> /dev/null
-if [[ $? == 0 ]]; then
-  echo Secret key successfully registered 
-fi
+
+[[ ! $? == 0 ]] || echo Secret key successfully registered 
+
 sed -i "${num_line}s|^PublicKey =.*|PublicKey = "$(echo ${PRIVKEY_SERVER} | wg pubkey)"|" ./create_profile.sh 2>/dev/null
-if [[ $? == 0 ]]; then
-  echo Public key successfully registered 
-fi
+
+[[ ! $? == 0 ]] || echo Public key successfully registered 
 
 sed -i "s/EXTERNAL_IP/$REAL_IP/" ./create_profile.sh
 
